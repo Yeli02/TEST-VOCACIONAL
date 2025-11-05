@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEST VOCACIONAL</title>
+    <link rel="stylesheet" href="styles.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <div class="card-header" id="header">TEST VOCACIONAL</div>
+        <div class="card-content" id="content">
+            </div>
+    </div>
+
+    <script>
+        const preguntas = [
+            // 🔬 Ciencias Exactas e Ingeniería
+            { texto: "En un videojuego, ¿priorizas resolver puzles basados en lógica y números?", area: "Ciencias Exactas e Ingeniería" },
+            { texto: "¿Te interesa diseñar sistemas o estructuras que sean eficientes y resistentes?", area: "Ciencias Exactas e Ingeniería" },
+            { texto: "¿Te atrae la idea de investigar nuevas fuentes de energía o materiales?", area: "Ciencias Exactas e Ingeniería" },
+            { texto: "¿Disfrutas analizando datos y buscando patrones para tomar decisiones?", area: "Ciencias Exactas e Ingeniería" },
+
+            // 🧑‍💻 Ingeniería de Sistemas y Tecnología
+            { texto: "¿Te gusta experimentar con hardware y software de computadoras?", area: "Ingeniería de Sistemas y Tecnología" },
+            { texto: "¿Te interesa desarrollar tu propio videojuego o aplicación desde cero?", area: "Ingeniería de Sistemas y Tecnología" },
+            { texto: "¿Te atrae la idea de proteger sistemas digitales (Ciberseguridad)?", area: "Ingeniería de Sistemas y Tecnología" },
+            { texto: "¿Te fascina el campo de la Inteligencia Artificial y cómo las máquinas 'aprenden'?", area: "Ingeniería de Sistemas y Tecnología" },
+
+            // 📚 Ciencias Sociales y Humanidades
+            { texto: "¿Te interesa analizar las motivaciones y el comportamiento de las personas?", area: "Ciencias Sociales y Humanidades" },
+            { texto: "¿Disfrutas estudiando diferentes culturas, idiomas o eventos históricos?", area: "Ciencias Sociales y Humanidades" },
+            { texto: "¿Te apasiona la idea de mediar en conflictos o defender los derechos de otros?", area: "Ciencias Sociales y Humanidades" },
+            { texto: "¿Prefieres comunicarte escribiendo ensayos o creando narrativas convincentes?", area: "Ciencias Sociales y Humanidades" },
+
+            // 🎨 Artes y Diseño
+            { texto: "¿Te gusta expresarte creando obras visuales, música o actuando?", area: "Artes y Diseño" },
+            { texto: "¿Disfrutas creando la estética de personajes, niveles o interfaces de usuario?", area: "Artes y Diseño" },
+            { texto: "¿Tienes un ojo agudo para el color, la composición y el diseño de espacios?", area: "Artes y Diseño" },
+            { texto: "¿Te atrae la idea de diseñar moda, paisajes o experiencias interactivas?", area: "Artes y Diseño" },
+
+            // 💵 Negocios y Economía
+            { texto: "¿Te sientes motivado por liderar equipos o empezar tu propio 'reino' (negocio)?", area: "Negocios y Economía" },
+            { texto: "¿Te interesa la gestión de recursos (dinero, personas, tiempo) para maximizar el 'botín' (beneficio)?", area: "Negocios y Economía" },
+            { texto: "¿Disfrutas convenciendo a otros (ventas) o creando estrategias de 'marketing'?", area: "Negocios y Economía" },
+            { texto: "¿Te gusta analizar los mercados (precios, ofertas) para predecir el futuro económico?", area: "Negocios y Economía" },
+            
+            // ⚕️ Ciencias de la Salud y Bienestar
+            { texto: "¿Te preocupa el bienestar de los demás y te gustaría curar 'heridas' (enfermedades)?", area: "Ciencias de la Salud" },
+            { texto: "¿Te interesa el funcionamiento del cuerpo humano o de los seres vivos (Biología)?", area: "Ciencias de la Salud" },
+            { texto: "¿Estás dispuesto a seguir protocolos detallados y trabajar bajo presión para ayudar a un 'paciente'?", area: "Ciencias de la Salud" },
+            { texto: "¿Te gustaría investigar para desarrollar nuevas 'pócimas' (medicamentos) o tratamientos?", area: "Ciencias de la Salud" }
+        ];
+
+        let preguntaActual = 0;
+        let puntuaciones = {};
+
+        function mostrarPregunta() {
+            if (preguntaActual >= preguntas.length) {
+                mostrarResultados();
+                return;
+            }
+
+            const pregunta = preguntas[preguntaActual];
+            const content = document.getElementById('content');
+            
+            content.innerHTML = `
+                <p class="question-text">
+                    [NIVEL ${preguntaActual + 1}]: ${pregunta.texto}
+                </p>
+                <div class="options-container">
+                    ${[1, 2, 3, 4, 5].map(valor => `
+                        <button onclick="responder(${valor})" class="answer-button">
+                            ${valor} - ${valor === 1 ? 'Totalmente en desacuerdo (No es mi misión)' : valor === 5 ? 'Totalmente de acuerdo (Mi destino es este)' : ''}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+            document.getElementById('header').innerText = `Test Vocacional - ${preguntaActual + 1} / ${preguntas.length}`;
+        }
+
+        function responder(valor) {
+            const pregunta = preguntas[preguntaActual];
+            puntuaciones[pregunta.area] = (puntuaciones[pregunta.area] || 0) + valor;
+            
+            preguntaActual++;
+            mostrarPregunta();
+        }
+
+        function mostrarResultados() {
+            const resultadosOrdenados = Object.entries(puntuaciones).sort((a, b) => b[1] - a[1]);
+            const content = document.getElementById('content');
+            
+            // Calcula la puntuación máxima posible para cada área
+            const maxPuntuacionPorArea = {};
+            preguntas.forEach(p => {
+                maxPuntuacionPorArea[p.area] = (maxPuntuacionPorArea[p.area] || 0) + 5;
+            });
+            
+            content.innerHTML = `
+                <div class="results-container">
+                    <h2>¡Misión Cumplida! Tu Clase de Héroe es:</h2>
+                    <div class="card-header" style="font-size: 1.5em; margin-bottom: 30px; color: var(--color-principal);">
+                        ${resultadosOrdenados[0][0]}
+                    </div>
+                    
+                    <p style="text-align: center; font-size: 1em;">— Nivel de Afinidad por Área —</p>
+
+                    ${resultadosOrdenados.map(([area, puntuacion]) => `
+                        <div class="result-item">
+                            <div class="result-label">
+                                <span>${area}</span>
+                                <span>${Math.round((puntuacion / maxPuntuacionPorArea[area]) * 100)}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: ${(puntuacion / maxPuntuacionPorArea[area]) * 100}%"></div>
+                            </div>
+                        </div>
+                    `).join('')}
+                    <button onclick="reiniciarTest()" class="restart-button">Reiniciar Aventura</button>
+                </div>
+            `;
+            document.getElementById('header').innerText = 'Game Over: Resumen Final';
+        }
+
+        function reiniciarTest() {
+            preguntaActual = 0;
+            puntuaciones = {};
+            mostrarPregunta();
+        }
+
+        // Iniciar el test
+        mostrarPregunta();
+    </script>
+</body>
+</html>
